@@ -1,0 +1,47 @@
+app:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/db
+    username: user
+    password: password
+
+spring:
+  application:
+    name: @project.name@
+  quartz:
+    scheduler-name: appScheduler
+    wait-for-jobs-to-complete-on-shutdown: true
+    jdbc:
+      schema: classpath:db/quartz_tables_postgres.sql
+    job-store-type: jdbc
+    properties:
+#      jdbc:
+#        initialize-schema: NEVER
+      scheduler:
+        instanceId: AUTO
+#      threadPool:
+#        threadCount: 5
+#      jobStore: org.quartz.impl.jdbcjobstore.JobStoreTX
+#      driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      org:
+        quartz:
+          jdbc:
+            initialize-schema: NEVER
+          jobStore:
+            dataSource: dataSource
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 1000
+            useProperties: false
+          threadPool:
+            threadCount: 25
+            threadPriority: 5
+            class: org.quartz.simpl.SimpleThreadPool
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
